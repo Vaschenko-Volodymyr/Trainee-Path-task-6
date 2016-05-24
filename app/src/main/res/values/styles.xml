@@ -1,11 +1,29 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorForeground">@color/dim_foreground_material_light</item>
     </style>
 
+    <style name="text_view_style" parent="@android:style/Widget.TextView">
+        <item name="android:layout_margin">@dimen/list_row_padding_and_margin</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center_vertical</item>
+
+        <item name="android:singleLine">true</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+    </style>
+
+    <style name="button_style" parent="Base.Widget.AppCompat.Button">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">@dimen/fragment_button_margin</item>
+        <item name="android:background">@drawable/buttons_selector</item>
+        <item name="android:padding">@dimen/fragment_button_padding</item>
+        <item name="android:text">@string/list_fragment_button_text</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 </resources>
