@@ -31,14 +31,14 @@ public class AsyncImageLoader extends AsyncTask<String, String, Bitmap> {
         synchronized (mUniqueObject) {
             bitmap = Cache.getInstance().getBitmapFromMemCache(url);
             if (bitmap == null){
-                Log.v(TAG, ">> synchronized decodeSampledBitmapFromUrl(), image " +
+                Log.v(TAG, ">> Method: doInBackground(), image " +
                         urlForLog +
                         " is not in cache now");
                 bitmap = BitmapDecoder.decodeSampledBitmapFromUrl(url, mMaxHeight, mMaxWidth);
 
             } else {
                 bitmap = Cache.getInstance().getBitmapFromMemCache(url);
-                Log.v(TAG, ">> synchronized decodeSampledBitmapFromUrl(), image " +
+                Log.v(TAG, ">> Method: doInBackground(), image " +
                         urlForLog +
                         " IS in cache now!");
             }
