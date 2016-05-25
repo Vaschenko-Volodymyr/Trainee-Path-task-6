@@ -42,7 +42,6 @@ public class AsyncImageLoader extends AsyncTask<String, String, Bitmap> {
                         urlForLog +
                         " IS in cache now!");
             }
-            mUniqueObject.notifyAll();
         }
         return bitmap;
     }
