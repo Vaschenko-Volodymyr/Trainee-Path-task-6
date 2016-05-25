@@ -6,22 +6,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.R;
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.holders.RecyclerViewHolder;
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.models.ViewModel;
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.utils.AsyncImageLoader;
-import com.traineepath.volodymyrvashchenko.trainee_path_task_6.utils.AsyncTaskCallback;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder>
+        implements UniqueObject {
 
     private List<ViewModel> mData = Collections.emptyList();
     private Context mContext;
@@ -42,19 +39,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
 
+        if (mStatus.get(mData.get(position).getUrl()) == null) {
+            mStatus.put(mData.get(position).getUrl(), new Object());
+        }
+
         mTasks.put(holder, new AsyncImageLoader(holder.getImage(),
                 holder.getImage().getHeight(),
                 holder.getImage().getWidth(),
-                new AsyncTaskCallback() {
-                    public void showToast(int textId) {
-                        Toast.makeText(mContext, textId, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public String getString(int urlId) {
-                        return mContext.getResources().getString(urlId);
-                    }
-                }));
+                mData.get(position)));
 
         if (mTasks.get(holder).getStatus().equals(AsyncTask.Status.RUNNING)) {
             mTasks.get(holder).cancel(true);
@@ -62,17 +54,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         holder.getImage().setImageDrawable(mContext.getResources().getDrawable(R.drawable.loading));
         holder.getTextView().setText(mData.get(position).getUrl());
 
-        mTasks.get(holder).execute(mData.get(position).getUrl());
-//        animate(holder);
+        mTasks.get(holder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mData.get(position).getUrl());
     }
 
     @Override
     public int getItemCount() {
         return mData.size();
-    }
-
-    public void animate(RecyclerView.ViewHolder viewHolder) {
-        final Animation overshoot = AnimationUtils.loadAnimation(mContext, R.anim.bounce);
-        viewHolder.itemView.setAnimation(overshoot);
     }
 }

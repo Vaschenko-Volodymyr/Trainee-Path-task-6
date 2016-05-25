@@ -10,19 +10,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.R;
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.fragments.ListViewFragment;
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.models.ViewModel;
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.utils.AsyncImageLoader;
-import com.traineepath.volodymyrvashchenko.trainee_path_task_6.utils.AsyncTaskCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ListAndGridViewAdapter extends BaseAdapter {
+public class ListAndGridViewAdapter extends BaseAdapter implements UniqueObject {
 
     private static final String TAG = ListViewFragment.class.getSimpleName();
 
@@ -78,23 +76,18 @@ public class ListAndGridViewAdapter extends BaseAdapter {
             }
         }
 
+        ViewModel mModel = (ViewModel) mData.get(position);
+        if (mStatus.get(mModel.getUrl()) == null) {
+            mStatus.put(mModel.getUrl(), new Object());
+        }
+
         mTasks.put(holder, new AsyncImageLoader(holder.image,
                 holder.image.getHeight(),
                 holder.image.getWidth(),
-                new AsyncTaskCallback() {
-                    public void showToast(int textId) {
-                        Toast.makeText(mContext, textId, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public String getString(int urlId) {
-                        return mContext.getResources().getString(urlId);
-                    }
-                }));
-
-        ViewModel mModel = (ViewModel) mData.get(position);
+                mStatus.get(mModel.getUrl())));
+        holder.image.setImageDrawable(mContext.getResources().getDrawable(R.drawable.loading));
         holder.text.setText(mModel.getUrl());
-        mTasks.get(holder).execute(mModel.getUrl());
+        mTasks.get(holder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mModel.getUrl());
 
         return view;
     }
