@@ -7,7 +7,7 @@ import android.util.LruCache;
 public class Cache {
     private static final String TAG = Cache.class.getSimpleName();
 
-    public static final int CACHE_SIZE = 4 * 1024 * 1024;
+    public static final int CACHE_SIZE = 8 * 1024 * 1024;
 
     private static Cache ourInstance = new Cache();
     private static LruCache<String, Bitmap> mMemoryCache;
@@ -31,7 +31,8 @@ public class Cache {
     }
 
     public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-        Log.v(TAG, "Method: addBitmapToMemoryCache(). key = " + key + " and bitmap = null? : " + bitmap.equals(null) );
+//        Log.v(TAG, "Method: addBitmapToMemoryCache(). key = " + key + " and bitmap = null? : " + bitmap.equals(null) );
+        if (key == null || bitmap == null) return;
 
         if (getBitmapFromMemCache(key) == null) {
 
@@ -42,6 +43,7 @@ public class Cache {
 
     public Bitmap getBitmapFromMemCache(String key) {
         Log.v(TAG, "Method: getBitmapFromMemCache(). key = " + key);
+        if (key == null) return null;
         Bitmap bitmap = mMemoryCache.get(key);
         if (bitmap != null ){
             Log.v(TAG, "Method: getBitmapFromMemCache(). Image is in cache.");

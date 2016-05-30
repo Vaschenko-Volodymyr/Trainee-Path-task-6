@@ -26,38 +26,38 @@ public class BaseFragment extends Fragment {
         Log.v(TAG, ">> Method - onCreate()");
         super.onCreate(savedInstanceState);
         mRestoreListOnStart = (savedInstanceState != null) && (savedInstanceState.getBoolean(LOGGED_STATE));
+
         Log.v(TAG, "<< Method - onCreate()");
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.v(TAG, ">> Method - onSaveInstanceState()");
         savedInstanceState.putBoolean(LOGGED_STATE, mRestoreListOnStart);
+        Log.v(TAG, "<< Method - onSaveInstanceState()");
     }
 
     @Override
     public void onResume() {
+        Log.v(TAG, ">> Method - onResume()");
         super.onResume();
         if (mRestoreListOnStart) {
             Log.v(TAG, "Method: onResume(), Invoke onClick on button");
             mLoadButton.callOnClick();
         }
+        Log.v(TAG, "<< Method - onResume()");
     }
 
     protected void fillModel() {
+        Log.v(TAG, ">> Method - fillModel()");
         for (int i = 0; i < LIST_SIZE; i++) {
+            String[] urls = getResources().getStringArray(R.array.urls);
             final ViewModel model = new ViewModel(getResources());
-            switch (i % 3) {
-                case 0:
-                    model.setUrl(R.string.first_url);
-                    break;
-                case 1:
-                    model.setUrl(R.string.second_url);
-                    break;
-                case 2:
-                    model.setUrl(R.string.third_url);
-                    break;
-            }
+            model.setUrl(urls[i%urls.length]);
             mData.add(model);
+            Log.v(TAG, "url in model[" + i + "] = " + model.getUrl());
         }
+
+        Log.v(TAG, "<< Method - fillModel()");
     }
 }

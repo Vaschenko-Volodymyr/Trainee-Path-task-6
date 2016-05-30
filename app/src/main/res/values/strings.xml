@@ -7,8 +7,52 @@
     <string name="already_loaded">Картинка уже загружена</string>
     <string name="loading_error">Проблемы с загрузкой</string>
 
-    <string name="first_url">http://static1.squarespace.com/static/5383a76de4b06dea6734f421/t/53d96f4ce4b042be0d26e104/1406758780069/1+logo</string>
-    <string name="second_url">http://static1.squarespace.com/static/5383a76de4b06dea6734f421/t/53f4a1c5e4b0e74a86aad1fb/1406758250399/2+logo</string>
-    <string name="third_url">http://www.wpclipart.com/signs_symbol/alphabets_numbers/outlined_numbers/white/number_3_white_T.png</string>
+    <string-array name="urls" >
+        <item>
+            http://static1.squarespace.com/static/5383a76de4b06dea6734f421/t/53d96f4ce4b042be0d26e104/1406758780069/1+logo
+        </item>
+        <item>
+            http://static1.squarespace.com/static/5383a76de4b06dea6734f421/t/53f4a1c5e4b0e74a86aad1fb/1406758250399/2+logo
+        </item>
+        <item>
+            http://www.wpclipart.com/signs_symbol/alphabets_numbers/outlined_numbers/white/number_3_white_T.png
+        </item>
+        <item>
+            http://ariellarestaurant.com/Scripts/Widgets/Timer/odometer/4.png
+        </item>
+        <item>
+            http://www.lancaster.ac.uk/media/lancaster-university/content-assets/images/50/5-1.png
+        </item>
+        <item>
+            http://ariellarestaurant.com/Scripts/Widgets/Timer/odometer/6.png
+        </item>
+        <item>
+            http://www.sullfire.org/Scripts/Widgets/Timer/odometer/7.png
+        </item>
+        <item>
+            http://www.goosen.com/Goosen.com/Scripts/Widgets/Timer/odometer/8.png
+        </item>
+        <item>
+            http://ariellarestaurant.com/Scripts/Widgets/Timer/odometer/9.png
+        </item>
+        <item>
+            https://image.spreadshirtmedia.com/image-server/v1/designs/12509820,width=178,height=178,version=1379928789/Number-Ten.png
+        </item>
+        <item>
+            http://colorbynumber.org/numbercoloringpages/new/numbers11.png
+        </item>
+        <item>
+            https://upload.wikimedia.org/wikipedia/commons/0/01/12NumberTwelveInCircle.png
+        </item>
+        <item>
+            http://safat.com/wp-content/uploads/2011/06/13-300x300.png
+        </item>
+        <item>
+            http://colorbynumber.org/numbercoloringpages/new/numbers14.png
+        </item>
+        <item>
+            http://wikitravel.org/upload/shared/a/a5/CT-15.png
+        </item>
+    </string-array>
 </resources>
 

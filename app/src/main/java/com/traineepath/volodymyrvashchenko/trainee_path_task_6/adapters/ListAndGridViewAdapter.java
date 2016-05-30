@@ -1,8 +1,10 @@
 package com.traineepath.volodymyrvashchenko.trainee_path_task_6.adapters;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,27 +14,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.R;
-import com.traineepath.volodymyrvashchenko.trainee_path_task_6.fragments.ListViewFragment;
 import com.traineepath.volodymyrvashchenko.trainee_path_task_6.models.ViewModel;
-import com.traineepath.volodymyrvashchenko.trainee_path_task_6.utils.AsyncImageLoader;
+import com.traineepath.volodymyrvashchenko.trainee_path_task_6.services.LoaderService;
+import com.traineepath.volodymyrvashchenko.trainee_path_task_6.utils.AdapterCallback;
+import com.traineepath.volodymyrvashchenko.trainee_path_task_6.utils.Cache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ListAndGridViewAdapter extends BaseAdapter implements UniqueObject {
+    private static final String TAG = ListAndGridViewAdapter.class.getSimpleName();
 
-    private static final String TAG = ListViewFragment.class.getSimpleName();
+    private static final String BROADCAST_ACTION = "status";
 
     private ArrayList mData;
-    private Context mContext;
     private LayoutInflater mInflater = null;
-    private Map<ViewHolder, AsyncImageLoader> mTasks;
+    private Map<ViewHolder, BroadcastReceiver> mTasks;
+    private AdapterCallback mCallback;
 
-    public ListAndGridViewAdapter(Fragment fragment, ArrayList data, Context context) {
-        mContext = context;
+    public ListAndGridViewAdapter(ArrayList data, AdapterCallback callback) {
+
         mData = data;
-        mInflater = (LayoutInflater) fragment.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mCallback = callback;
+        mInflater = mCallback.getLayoutInflater();
         mTasks = new HashMap<>(data.size());
     }
 
@@ -57,10 +62,10 @@ public class ListAndGridViewAdapter extends BaseAdapter implements UniqueObject 
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         Log.v(TAG, ">> Method - getView()" + position);
         View view = convertView;
-        ViewHolder holder;
+        final ViewHolder holder;
 
         if (convertView == null) {
             view = mInflater.inflate(R.layout.item_layout, null);
@@ -71,23 +76,40 @@ public class ListAndGridViewAdapter extends BaseAdapter implements UniqueObject 
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
-            if (mTasks.get(holder).getStatus().equals(AsyncTask.Status.RUNNING)) {
-                mTasks.get(holder).cancel(true);
-            }
+            mCallback.unregisterReceiver(mTasks.get(holder));
         }
 
-        ViewModel mModel = (ViewModel) mData.get(position);
-        if (mStatus.get(mModel.getUrl()) == null) {
-            mStatus.put(mModel.getUrl(), new Object());
-        }
+        final ViewModel mModel = (ViewModel) mData.get(position);
 
-        mTasks.put(holder, new AsyncImageLoader(holder.image,
-                holder.image.getHeight(),
-                holder.image.getWidth(),
-                mStatus.get(mModel.getUrl())));
-        holder.image.setImageDrawable(mContext.getResources().getDrawable(R.drawable.loading));
+        holder.image.setImageDrawable(mCallback.getDrawable(R.drawable.loading));
         holder.text.setText(mModel.getUrl());
-        mTasks.get(holder).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mModel.getUrl());
+
+
+        IntentFilter filter = new IntentFilter(BROADCAST_ACTION);
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+
+            private String expectedUrl = mModel.getUrl();
+            private ViewHolder viewHolder = holder;
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (expectedUrl.equals(intent.getStringExtra(LoaderService.getUrlKey()))) {
+                    viewHolder.image.setImageBitmap(Cache.getInstance().getBitmapFromMemCache(
+                            intent.getStringExtra(LoaderService.getUrlKey())));
+                }
+            }
+        };
+
+        mTasks.put(holder, receiver);
+
+        mCallback.registerReceiver(receiver, filter);
+
+        Bitmap bitmap = Cache.getInstance().getBitmapFromMemCache(mModel.getUrl());
+        if (bitmap == null) {
+            mCallback.startService(mModel.getUrl(), holder.image.getHeight(), holder.image.getWidth());
+        } else {
+            holder.image.setImageBitmap(bitmap);
+        }
 
         return view;
     }
